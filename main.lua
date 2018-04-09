@@ -27,25 +27,70 @@ local mole = display.newImage("Images/mole.png", 0, 0)
 	--make the mole invisible
 	mole.isVisible = false
 
-local points = display.newText("points: 0", 0, 0, "Georgia", 50)
+local Score = 0
+local ScoreText
+local textObject
 
-	--text postion
-	points.x = display.contentWidth/2
-	points.y = 40
+------------------------------------------------------------------------
+-- FUNCTIONS 
+------------------------------------------------------------------------
 
+-- this function makes a mole appear in a random (x,y) position on the,
+-- screen before calling the Hide function 
+function PopUp()
 
-----------------------------------------Functions-----------------------------------------------------------
-
---This function makes the mole appear in a random (x,y) postion on the screen
---before calling the hide function
-
-local function Popup()
-	
-	--Choosing random position on the screen between 0 and the size of the screen
-	mole.x = math.random( 0, display.contentWidth)
+	-- choosing random Position on the screen between 0 and the size of,
+	--the screen 
+	mole.x = math.random(0, display.contentWidth )
 	mole.y = math.random(0, display.contentHeight)
 
-	mole.isVisible = true
-    timer.performWithDelay(500, Hide)
+	-- make the mole visible 
+	mole.isVisible = true 
+	timer.performWithDelay(500, Hide)
 end
+
+-- this function calls the PopUp function after 3 seconds 
+function PopUpDelay()
+	timer.performWithDelay(3000, PopUp)
+end
+
+-- This function makes the mole invisible and then calls the PopUpdelay function
+function Hide()
+
+	-- changing Visiblity
+	mole.isVisible = false  
+	PopUpDelay()
+end 
+
+-- this function starts the game 
+function GameStart ()
+	PopUpDelay()
+end
+
+-- this function increments the score only if the mole is clicked. it then,
+-- displays the new score.
+function Whacked( event )
+
+	-- if touch phase just started
+	if (event.phase == "began") then
+		Score = Score + 1
+		ScoreText.text = Score .. ""
+	end
+end
+
+ScoreText = display.newText( "0", display.contentWidth/2, 50, nil, 50 )
+ScoreText:setTextColor(255/255, 0/255, 0/255)
+textObject = display.newText( "Score:", display.contentWidth/2.5, 50, nil, 50 )
+textObject:setTextColor(255/255, 0/255, 0/255)
+------------------------------------------------------------------------------
+-- EVENT LISTENERS 
+-----------------------------------------------------------------------------
+-- added the event listener to the moles so that if the mole is touched, 
+-- the whacked function is called 
+mole:addEventListener("touch", Whacked )
+
+-----------------------------------------------------------------------------
+-- START THE GAME
+-----------------------------------------------------------------------------
+GameStart () 
 
